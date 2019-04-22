@@ -1,5 +1,6 @@
 from flask import Flask,jsonify, request, make_response, g
 from flask_restful import Api, Resource
+import os
 
 app = Flask(__name__)
 api = Api(app)
@@ -7,13 +8,16 @@ newdict = {}
 
 class key_value(Resource):
 	def get(self, key):
-		if key in newdict:
-			#on key value found return found value
-			value = newdict[key]
-			return make_response(jsonify(doesExist=True, message="Retrieved successfully", value=value), 200)
+		if os.environ['FORWARDING_ADDRESS']: #nonempty forwarding address forward to main instance
+			return make_response('nonempty')
 		else:
-			#on key value not found error
-			return make_response(jsonify(doesExist=False, error="Key does not exist", message="Error in GET"), 404)
+			if key in newdict:
+				#on key value found return found value
+				value = newdict[key]
+				return make_response(jsonify(doesExist=True, message="Retrieved successfully", value=value), 200)
+			else:
+				#on key value not found error
+				return make_response(jsonify(doesExist=False, error="Key does not exist", message="Error in GET"), 404)
 
 	def put(self, key):
 		if len(key) < 50:
@@ -43,4 +47,4 @@ class key_value(Resource):
 api.add_resource(key_value, '/key-value-store/<key>')
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=8082)
+    app.run(debug=True, host='0.0.0.0', port=8080)
