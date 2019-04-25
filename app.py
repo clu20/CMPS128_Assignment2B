@@ -10,8 +10,8 @@ newdict = {}
 
 class key_value(Resource):
     def get(self, key):
-        #nonempty forwarding address forward to main instance
         if 'FORWARDING_ADDRESS' in os.environ:
+        	#nonempty forwarding address forward to main instance
             try:
                 return requests.get('http://main-container:8080/key-value-store/' + key).json()
             except:
@@ -28,19 +28,18 @@ class key_value(Resource):
     def put(self, key):
             if len(key) < 50:
                 message = request.get_json()
-                if key in newdict: ## edit the message
-                    if message.get('value'):## data exists
-                        newdict[key] = message.get('value')
-                        return make_response(jsonify(message="Updated successfully",replaced=True), 200)
-                    else: ## data nonexistent
-                        return make_response(jsonify(error="Value is missing",message="Error in PUT"), 400)
-                else: ##add a new message at key
-                    if message.get('value'): ##data exists
-                        ##change message of 'key'
-                        newdict[key] = message.get('value')
-                        return make_response(jsonify(message="Added successfully",replaced=False), 201)
-                    else: ##data nonexistent
-                        return make_response(jsonify(error="Value is missing",message="Error in PUT"), 400)
+                v = message.get('value')
+                if v:
+                	if key in newdict:
+                		#edit value @ key, key
+                		newdict[key] = v
+                		return make_response(jsonify(message='Updated successfully', replaced=True),200)
+                	else:
+                		#add new value @ key, key
+                		newdict[key] = v
+                		return make_response(jsonify(message='Added successfully', replaced=False), 200)
+                else:
+                	return make_response(jsonify(error="Value is missing",message="Error in PUT"), 400)
             else:
                 return make_response(jsonify(error="Key is too long", message="Error in PUT"), 400)
 
