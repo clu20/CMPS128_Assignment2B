@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request, make_response, g
 from flask_restful import Api, Resource
-import os
+
+import os, requests
 
 app = Flask(__name__)
 api = Api(app)
@@ -9,8 +10,8 @@ newdict = {}
 
 class key_value(Resource):
 	def get(self, key):
-		if forwarding:
-			return make_response(jsonify(error="Main instance is down", message="Error in GET"), 503)
+		if 'FORWARDING_ADDRESS' in os.environ: #nonempty forwarding address forward to main instance
+			return requests.get('http://main-container:8080/key-value-store/course1')
 		else:
 			if key in newdict:
 				#on key value found return found value
@@ -21,9 +22,6 @@ class key_value(Resource):
 				return make_response(jsonify(doesExist=False, error="Key does not exist", message="Error in GET"), 404)
 
 	def put(self, key):
-		if forwarding:
-			return make_response(jsonify(error="Main instance is down", message="Error in PUT"), 503)
-		else:
 			if len(key) < 50:
 				message = request.get_json()
 				if key in newdict: ## edit the message
@@ -43,9 +41,6 @@ class key_value(Resource):
 				return make_response(jsonify(error="Key is too long", message="Error in PUT"), 400)
 
 	def delete(self, key):
-		if forwarding:
-			return make_response(jsonify(error="Main instance is down", message="Error in DELETE"), 503)
-		else:
 			if newdict.pop(key,None) == None:
 				return make_response(jsonify(doesExist=False, error="Key does not exist", message="Error in DELETE"), 404)
 			else:
