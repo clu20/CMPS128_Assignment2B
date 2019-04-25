@@ -13,7 +13,7 @@ class key_value(Resource):
         #nonempty forwarding address forward to main instance
         if 'FORWARDING_ADDRESS' in os.environ:
             try:
-                return requests.get('http://main-container:8080/key-value-store/course1').json()
+                return requests.get('http://main-container:8080/key-value-store/' + key).json()
             except:
                 return make_response(jsonify(error= 'Main instance is down', message = 'Error in GET'), 503)
         else:
