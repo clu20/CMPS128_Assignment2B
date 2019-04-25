@@ -9,7 +9,7 @@ newdict = {}
 class key_value(Resource):
 	def get(self, key):
 		if 'FORWARDING_ADDRESS' in os.environ: #nonempty forwarding address forward to main instance
-			return requests.get('http://127.0.0.1:8082/key-value-store/course1').content
+			return requests.get('http://main-container:8080/key-value-store/course1')
 		else:
 			if key in newdict:
 				#on key value found return found value
