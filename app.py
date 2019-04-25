@@ -1,6 +1,6 @@
 from flask import Flask,jsonify, request, make_response, g
 from flask_restful import Api, Resource
-import os
+import os, requests
 
 app = Flask(__name__)
 api = Api(app)
@@ -8,8 +8,8 @@ newdict = {}
 
 class key_value(Resource):
 	def get(self, key):
-		if os.environ['FORWARDING_ADDRESS']: #nonempty forwarding address forward to main instance
-			return make_response('nonempty')
+		if 'FORWARDING_ADDRESS' in os.environ: #nonempty forwarding address forward to main instance
+			return requests.get('http://127.0.0.1:8082/key-value-store/course1').content
 		else:
 			if key in newdict:
 				#on key value found return found value
