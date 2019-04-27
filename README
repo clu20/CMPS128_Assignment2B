@@ -1,0 +1,5 @@
+# CMPS128_Assignment2A
+
+Main-container or instance must be named 'main-instance' to forward requests to proper host
+Tests fully completed on MacOS
+Written in python3 using flask_restful api

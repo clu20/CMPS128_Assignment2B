@@ -1,5 +1,7 @@
 clu20:
     Recognizing environment variable 'FORWARDING_ADDRESS' is in os_environ
-    Proper GET Request responses for: main/forwarding-container running, only main-container running,
-        and only forwarding-container running.
+    GET Request responses from forwarding-container
     Fixed Requests from forwarding-instance returning wrong status_code
+    DELETE Request responses from forwarding-container
+wyu19:
+	PUT Request responses from forwarding-container

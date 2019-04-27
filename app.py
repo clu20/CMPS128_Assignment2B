@@ -13,7 +13,7 @@ class key_value(Resource):
         if 'FORWARDING_ADDRESS' in os.environ:
             #nonempty forwarding address forward to main instance
             try:
-                r = requests.get('http://main-container:8080/key-value-store/' + key)
+                r = requests.get('http://main-instance:8080/key-value-store/' + key)
                 return r.json(),r.status_code
             except:
                 return make_response(jsonify(error= 'Main instance is down', message = 'Error in GET'), 503)
@@ -30,7 +30,7 @@ class key_value(Resource):
         if 'FORWARDING_ADDRESS' in os.environ:
             try:
                 json = request.get_json()
-                r = requests.put('http://main-container:8080/key-value-store/'+key, json=json)
+                r = requests.put('http://main-instance:8080/key-value-store/'+key, json=json)
                 return r.json(),r.status_code
             except:
                 return make_response(jsonify(error = 'Main instance is down', message="Error in PUT"), 503)
@@ -54,10 +54,17 @@ class key_value(Resource):
 
 
     def delete(self, key):
-        if newdict.pop(key,None) == None:
-            return make_response(jsonify(doesExist=False, error="Key does not exist", message="Error in DELETE"), 404)
+        if 'FORWARDING_ADDRESS' in os.environ:
+            try:
+                r = requests.delete('http://main-instance:8080/key-value-store/'+key)
+                return r.json(),r.status_code
+            except:
+                return make_response(jsonify(error='Main instance is down', message='Error in DELETE'),503)
         else:
-            return make_response(jsonify(doesExist=True, message="Deleted successfully"), 200)
+            if newdict.pop(key,None) == None:
+                return make_response(jsonify(doesExist=False, error="Key does not exist", message="Error in DELETE"), 404)
+            else:
+                return make_response(jsonify(doesExist=True, message="Deleted successfully"), 200)
 
 api.add_resource(key_value, '/key-value-store/', '/key-value-store/<key>')
 
