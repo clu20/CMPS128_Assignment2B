@@ -4,4 +4,5 @@ clu20:
     Fixed Requests from forwarding-instance returning wrong status_code
     DELETE Request responses from forwarding-container
 wyu19:
-	PUT Request responses from forwarding-container
+	Got PUT function to work for all cases.
+	Worked on debugging the the test script errors
