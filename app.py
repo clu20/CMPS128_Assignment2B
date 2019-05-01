@@ -13,7 +13,7 @@ class key_value(Resource):
         if 'FORWARDING_ADDRESS' in os.environ:
             #nonempty forwarding address forward to main instance
             try:
-                r = requests.get('http://main-instance:8080/key-value-store/' + key)
+                r = requests.get('http://10.10.0.2:8080/key-value-store/' + key)
                 return r.json(),r.status_code
             except:
                 return make_response(jsonify(error= 'Main instance is down', message = 'Error in GET'), 503)
@@ -30,7 +30,7 @@ class key_value(Resource):
         if 'FORWARDING_ADDRESS' in os.environ:
             try:
                 json = request.get_json()
-                r = requests.put('http://main-instance:8080/key-value-store/'+key, json=json)
+                r = requests.put('http://10.10.0.2:8080/key-value-store/'+key, json=json)
                 return r.json(),r.status_code
             except:
                 return make_response(jsonify(error = 'Main instance is down', message="Error in PUT"), 503)
@@ -56,7 +56,7 @@ class key_value(Resource):
     def delete(self, key):
         if 'FORWARDING_ADDRESS' in os.environ:
             try:
-                r = requests.delete('http://main-instance:8080/key-value-store/'+key)
+                r = requests.delete('http://10.10.0.2:8080/key-value-store/'+key)
                 return r.json(),r.status_code
             except:
                 return make_response(jsonify(error='Main instance is down', message='Error in DELETE'),503)
